@@ -1,5 +1,6 @@
-from requests import Response
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.mixins import (
     CreateModelMixin,
     UpdateModelMixin,
@@ -20,12 +21,15 @@ class BillViewSet(
 ):
     http_methods = ["get", "post", "patch", "delete"]
     serializer_class = BillSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Bill.objects.all().order_by("-created_at")
 
     @action(methods=["GET"], detail=True)
     def print(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        queryset = self.get_object()
+        print(queryset)
+        serializer = BillSerializer(instance=queryset)
+
         return Response(serializer.data)

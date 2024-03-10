@@ -4,7 +4,6 @@ from supermarket_backend.apps.inventory.models import Item
 
 
 class Bill(models.Model):
-    items = models.ManyToManyField(Item, through="BillItem")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -13,7 +12,7 @@ class Bill(models.Model):
 
 
 class BillItem(models.Model):
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="items")
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
